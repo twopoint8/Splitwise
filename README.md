@@ -1,5 +1,5 @@
-Split wise Java Application 
-SplitWise
+# Split wise Java Application 
+# SplitWise
 A few friends decided to go on a trip together. They decided to log
 their expenses and come back home and settle the difference.
 Given an input of friends and amount spent, print out a list of who
