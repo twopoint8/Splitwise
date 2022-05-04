@@ -6,6 +6,6 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public class Expense {
-	private Integer amount;
+	private Double amount;
 	private User paidBy;
 }
