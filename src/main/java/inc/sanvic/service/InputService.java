@@ -5,10 +5,17 @@ import java.util.List;
 import java.util.Scanner;
 
 import inc.sanvic.exception.InvalidAmountException;
+import inc.sanvic.repository.ExpenseRepository;
+import inc.sanvic.repository.UserRepository;
 
 public class InputService {
 	private String userName;
 	private Double amount;
+	private ExpenseService expenseService;
+	
+	public InputService(ExpenseRepository expenseRepository, UserRepository userRepository) {
+		expenseService = new ExpenseService(expenseRepository, userRepository);
+	}
 
 	public void takeUserInput() {
 		Scanner scanner = new Scanner(System.in);
@@ -26,8 +33,9 @@ public class InputService {
 			} catch (InvalidAmountException invalidAmountException) {
 				invalidAmountException.printStackTrace();
 			} catch (NumberFormatException e) {
-				System.out.println("Amount must be a number");
+				throw new NumberFormatException("Amount must be number");
 			}
+			expenseService.createExpense(userName, amount);
 		}
 		scanner.close();
 	}
