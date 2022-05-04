@@ -12,6 +12,6 @@ public class SplitwiseApplication {
 		SpringApplication.run(SplitwiseApplication.class, args);
 
 		InputService inputService = new InputService();
-		inputService.takeInput();
+		inputService.takeUserInput();
 	}
 }
