@@ -10,20 +10,21 @@ import inc.sanvic.repository.UserRepository;
 
 class UserServiceTest {
 
-	UserRepository userRepository;
-	UserService userService;
-	
+	private UserRepository userRepository;
+	private UserService userService;
+
 	@BeforeEach
 	void init() {
 		userRepository = new UserRepository();
 		userService = new UserService(userRepository);
 	}
+
 	@Test
 	void shouldSucessfullyAddUser() {
 		final String userName = "testUser";
-		
+
 		userService.addUser(new User(userName));
-		
+
 		assertEquals(1, userRepository.getUsers().size());
 	}
 }

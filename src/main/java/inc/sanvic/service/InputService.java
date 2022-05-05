@@ -12,7 +12,7 @@ public class InputService {
 	private String userName;
 	private Double amount;
 	private ExpenseService expenseService;
-	
+
 	public InputService(ExpenseRepository expenseRepository, UserRepository userRepository) {
 		expenseService = new ExpenseService(expenseRepository, userRepository);
 	}

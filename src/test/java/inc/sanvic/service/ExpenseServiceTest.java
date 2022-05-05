@@ -1,26 +1,20 @@
 package inc.sanvic.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.Mockito.mock;
-
-import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import inc.sanvic.model.Expense;
 import inc.sanvic.repository.ExpenseRepository;
 import inc.sanvic.repository.UserRepository;
 
 @SpringBootTest
 public class ExpenseServiceTest {
 
-	ExpenseRepository expenseRepository;
-	UserRepository userRepository;
-	ExpenseService expenseService;
+	private ExpenseRepository expenseRepository;
+	private UserRepository userRepository;
+	private ExpenseService expenseService;
 
 	@BeforeEach
 	void init() {
@@ -31,8 +25,8 @@ public class ExpenseServiceTest {
 
 	@Test
 	public void shouldCreateAnExpenseForNewUser() {
-		String paidBy = "testUser";
-		Double amount = 100D;
+		final String paidBy = "testUser";
+		final Double amount = 100D;
 
 		expenseService.createExpense(paidBy, amount);
 
@@ -42,12 +36,13 @@ public class ExpenseServiceTest {
 	@Test
 	public void shouldAddAmountInExpenseForExistingUser() {
 		String paidBy = "testUser";
-		Double firstExpenseamount = 100D;
-		Double secondExpenseamount = 123D;
-		Double expectedAmount = 223D;
+		final Double firstExpenseamount = 100D;
+		final Double secondExpenseamount = 123D;
+		final Double expectedAmount = 223D;
 
 		expenseService.createExpense(paidBy, firstExpenseamount);
 		expenseService.createExpense(paidBy, secondExpenseamount);
+
 		Double actualAmount = expenseRepository.getExpenses().stream()
 				.filter(expense -> expense.getPaidBy().getName().equals(paidBy)).findFirst().get().getAmount();
 

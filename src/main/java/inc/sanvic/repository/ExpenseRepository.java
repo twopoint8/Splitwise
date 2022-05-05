@@ -1,4 +1,4 @@
- package inc.sanvic.repository;
+package inc.sanvic.repository;
 
 import java.util.ArrayList;
 import java.util.List;
