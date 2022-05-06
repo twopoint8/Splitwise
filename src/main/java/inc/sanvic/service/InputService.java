@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Scanner;
 
 import inc.sanvic.exception.InvalidAmountException;
+import inc.sanvic.exception.InvalidInputFormatException;
 import inc.sanvic.repository.ExpenseRepository;
 import inc.sanvic.repository.UserRepository;
 
@@ -26,21 +27,26 @@ public class InputService {
 				break;
 			try {
 				List<String> inputList = extractValuesFromInput(inputFromConsole);
-				userName = inputList.get(0);
-				amount = Double.parseDouble(inputList.get(1));
+				userName = inputList.get(0).trim();
+				amount = Double.parseDouble(inputList.get(1).trim());
 				if (amount < 0)
 					throw new InvalidAmountException("Amount must be equal or greater than 0");
+				expenseService.createExpense(userName, amount);
 			} catch (InvalidAmountException invalidAmountException) {
-				invalidAmountException.printStackTrace();
-			} catch (NumberFormatException e) {
-				throw new NumberFormatException("Amount must be number");
-			}
-			expenseService.createExpense(userName, amount);
+				System.err.println("Amount must be equal or greater than 0 \nPlease make this entry again" );
+			} catch (NumberFormatException numberFormatException) {
+				System.err.println("Amount must be number\nPlease make this entry again");
+			} catch (InvalidInputFormatException invalidInputFormatException) {
+				System.err.println("Input format is not valid, Should be like [Payee Name, Amount]\nPlease make this entry again");
+			}			
 		}
 		scanner.close();
 	}
 
-	public List<String> extractValuesFromInput(String inputFromConsole) {
+	private List<String> extractValuesFromInput(String inputFromConsole) throws InvalidInputFormatException {
+		 String[] extractedValues = inputFromConsole.split(",");
+		if(extractedValues.length!=2)
+			throw new InvalidInputFormatException("Input format is not valid, Should be like [Payee Name, Amount]");
 		return Arrays.asList(inputFromConsole.split(","));
 	}
 }
