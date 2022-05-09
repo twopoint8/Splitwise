@@ -17,11 +17,13 @@ public class ExpenseManagerService {
 	private SettleUpExpenseService settleUpService;
 	private IndexingService indexingService;
 	private IndexRepository indexRepository;
+	private UtilityService utilityService;
 	public ExpenseManagerService(ExpenseRepository expenseRepository, IndexRepository indexRepository) {
 		this.expenseRepository = expenseRepository;
 		this.indexRepository = indexRepository;
 		settleUpService = new SettleUpExpenseService(expenseRepository,indexRepository);
 		indexingService = new IndexingService(indexRepository, expenseRepository);
+		utilityService = new UtilityService();
 	}
 
 	public void splitExpenses() {
@@ -29,7 +31,7 @@ public class ExpenseManagerService {
 		totalExpenses = expenses.size();
 		balanceSheetMatrix = new Double[totalExpenses][totalExpenses];
 		
-		balanceSheetMatrix = fill2DArrayWithZeros(balanceSheetMatrix);
+		balanceSheetMatrix = utilityService.initializeArrayWithZeros(balanceSheetMatrix);
 		indexingService.setIndexes();
 
 		expenses.forEach(expense -> {
@@ -37,17 +39,15 @@ public class ExpenseManagerService {
 
 			for (int currentUser = 0; currentUser < totalExpenses; currentUser++) {
 				if (currentExpensePayingUserIndex != currentUser)
-					balanceSheetMatrix[currentUser][currentExpensePayingUserIndex] += expense.getAmount()
-							/ totalExpenses;
+					balanceSheetMatrix[currentUser][currentExpensePayingUserIndex] += utilityService.roundOfAmountToTwoDecimal(expense.getAmount()/ totalExpenses);
+							;
 			}
 		});
+		
 		settleUpService.calculateEachUserTotalAmountToPayOrGet(balanceSheetMatrix);
 	}
 
-	private Double[][] fill2DArrayWithZeros(Double balanceSheetMatrix[][]) {
-		Arrays.stream(balanceSheetMatrix).forEach(a -> Arrays.fill(a, 0.0));
-		return balanceSheetMatrix;
-	}
+	
 	
 	
 }

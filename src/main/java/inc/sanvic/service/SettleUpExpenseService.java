@@ -1,7 +1,5 @@
 package inc.sanvic.service;
 
-import java.util.Arrays;
-
 import inc.sanvic.repository.ExpenseRepository;
 import inc.sanvic.repository.IndexRepository;
 
@@ -10,10 +8,11 @@ public class SettleUpExpenseService {
 	private ExpenseRepository expenseRepository;
 	private IndexRepository indexRepository;
 	private Integer totalExpenses;
-
+	private UtilityService utilityService;
 	public SettleUpExpenseService(ExpenseRepository expenseRepository, IndexRepository indexRepository) {
 		this.expenseRepository = expenseRepository;
 		this.indexRepository = indexRepository;
+		utilityService = new UtilityService();
 	}
 
 	private Integer getInexOfMinimumValue(Double arr[]) {
@@ -55,11 +54,12 @@ public class SettleUpExpenseService {
 	public void calculateEachUserTotalAmountToPayOrGet(Double balanceSheetMatrix[][]) {
 		totalExpenses = expenseRepository.getExpenses().size();
 		Double[] totalAmountPerUserList = new Double[totalExpenses];
-		fillArrayWithZeros(totalAmountPerUserList);
+		utilityService.initializeArrayWithZeros(totalAmountPerUserList);
 		for (int indexOfCurrentUser = 0; indexOfCurrentUser < totalExpenses; indexOfCurrentUser++)
-			for (int indexOfOtherUser = 0; indexOfOtherUser < totalExpenses; indexOfOtherUser++)
-				totalAmountPerUserList[indexOfCurrentUser] += (balanceSheetMatrix[indexOfOtherUser][indexOfCurrentUser]
-						- balanceSheetMatrix[indexOfCurrentUser][indexOfOtherUser]);
+			for (int indexOfOtherUser = 0; indexOfOtherUser < totalExpenses; indexOfOtherUser++) 
+		totalAmountPerUserList[indexOfCurrentUser] = utilityService.roundOfAmountToTwoDecimal((totalAmountPerUserList[indexOfCurrentUser] + utilityService.roundOfAmountToTwoDecimal(balanceSheetMatrix[indexOfOtherUser][indexOfCurrentUser]
+						- balanceSheetMatrix[indexOfCurrentUser][indexOfOtherUser])));
+		
 		settleAmountAmongUsers(totalAmountPerUserList);
 	}
 
@@ -67,8 +67,7 @@ public class SettleUpExpenseService {
 		System.out.println(whoPays + " pays " + howMuchToPay + " to Person " + whomToPay);
 	}
 
-	private Double[] fillArrayWithZeros(Double totalAmountPerUserList[]) {
-		Arrays.fill(totalAmountPerUserList, 0.0);
-		return totalAmountPerUserList;
-	}
+	
+	
+
 }
