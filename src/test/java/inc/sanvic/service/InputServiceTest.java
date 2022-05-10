@@ -2,8 +2,10 @@ package inc.sanvic.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
 import inc.sanvic.exception.InvalidAmountException;
 import inc.sanvic.exception.InvalidInputFormatException;
 import inc.sanvic.repository.ExpenseRepository;
@@ -22,7 +24,6 @@ public class InputServiceTest {
 		inputService = new InputService(expenseRepository, userRepository);
 	}
 
-
 	@Test
 	public void shouldReturnValidAmountValue() throws NumberFormatException, InvalidAmountException {
 		final String amount = "100";
@@ -39,7 +40,7 @@ public class InputServiceTest {
 			inputService.pasrseAndValidateAmount(amount);
 		});
 	}
-	
+
 	@Test
 	public void shouldThrowInvalidAmountExceptionForAmountLessThanZero() {
 		final String amount = "-25";
@@ -48,7 +49,7 @@ public class InputServiceTest {
 			inputService.pasrseAndValidateAmount(amount);
 		});
 	}
-	
+
 	@Test
 	public void shouldThrowInvalidInputFormatExceptionForInvalidUserInput() {
 		final String testConsoleInput = "testUser 244";
@@ -57,7 +58,7 @@ public class InputServiceTest {
 			inputService.extractValuesFromInput(testConsoleInput);
 		});
 	}
-	
+
 	@Test
 	public void shouldGiveValidValuesForValidUserInput() throws InvalidInputFormatException {
 		final String testConsoleInput = "testUser,244";
@@ -66,5 +67,5 @@ public class InputServiceTest {
 		assertEquals(expectedValue, inputService.extractValuesFromInput(testConsoleInput).size());
 		assertEquals(expectedTestUserName, inputService.extractValuesFromInput(testConsoleInput).get(0));
 	}
-	
+
 }

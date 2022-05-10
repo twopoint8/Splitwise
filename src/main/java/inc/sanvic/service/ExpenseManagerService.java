@@ -1,6 +1,5 @@
 package inc.sanvic.service;
 
-import java.util.Arrays;
 import java.util.List;
 
 import inc.sanvic.model.Expense;
@@ -9,7 +8,6 @@ import inc.sanvic.repository.IndexRepository;
 
 public class ExpenseManagerService {
 
-	
 	private ExpenseRepository expenseRepository;
 	private Double[][] balanceSheetMatrix;
 	private int totalExpenses;
@@ -18,10 +16,11 @@ public class ExpenseManagerService {
 	private IndexingService indexingService;
 	private IndexRepository indexRepository;
 	private UtilityService utilityService;
+
 	public ExpenseManagerService(ExpenseRepository expenseRepository, IndexRepository indexRepository) {
 		this.expenseRepository = expenseRepository;
 		this.indexRepository = indexRepository;
-		settleUpService = new SettleUpExpenseService(expenseRepository,indexRepository);
+		settleUpService = new SettleUpExpenseService(expenseRepository, indexRepository);
 		indexingService = new IndexingService(indexRepository, expenseRepository);
 		utilityService = new UtilityService();
 	}
@@ -30,7 +29,7 @@ public class ExpenseManagerService {
 		expenses = expenseRepository.getExpenses();
 		totalExpenses = expenses.size();
 		balanceSheetMatrix = new Double[totalExpenses][totalExpenses];
-		
+
 		balanceSheetMatrix = utilityService.initializeArrayWithZeros(balanceSheetMatrix);
 		indexingService.setIndexes();
 
@@ -39,15 +38,13 @@ public class ExpenseManagerService {
 
 			for (int currentUser = 0; currentUser < totalExpenses; currentUser++) {
 				if (currentExpensePayingUserIndex != currentUser)
-					balanceSheetMatrix[currentUser][currentExpensePayingUserIndex] += utilityService.roundOfAmountToTwoDecimal(expense.getAmount()/ totalExpenses);
-							;
+					balanceSheetMatrix[currentUser][currentExpensePayingUserIndex] += utilityService
+							.roundOfValueUptoTwoDecimal(expense.getAmount() / totalExpenses);
+				;
 			}
 		});
-		
+
 		settleUpService.calculateEachUserTotalAmountToPayOrGet(balanceSheetMatrix);
 	}
 
-	
-	
-	
 }
