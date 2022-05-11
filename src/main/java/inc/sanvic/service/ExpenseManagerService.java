@@ -2,49 +2,57 @@ package inc.sanvic.service;
 
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import inc.sanvic.helper.Utility;
 import inc.sanvic.model.Expense;
 import inc.sanvic.repository.ExpenseRepository;
 import inc.sanvic.repository.IndexRepository;
 
+
+@Service
 public class ExpenseManagerService {
 
-	private ExpenseRepository expenseRepository;
 	private Double[][] balanceSheetMatrix;
-	private int totalExpenses;
 	private List<Expense> expenses;
-	private SettleUpExpenseService settleUpService;
-	private IndexingService indexingService;
-	private IndexRepository indexRepository;
-	private UtilityService utilityService;
 
-	public ExpenseManagerService(ExpenseRepository expenseRepository, IndexRepository indexRepository) {
-		this.expenseRepository = expenseRepository;
-		this.indexRepository = indexRepository;
-		settleUpService = new SettleUpExpenseService(expenseRepository, indexRepository);
-		indexingService = new IndexingService(indexRepository, expenseRepository);
-		utilityService = new UtilityService();
-	}
+	@Autowired
+	Utility utility;
+
+	@Autowired
+	ExpenseRepository expenseRepository;
+	@Autowired
+	IndexRepository indexRepository;
+	@Autowired
+	SettleUpExpenseService settleUpService;
+	@Autowired
+	IndexingService indexingService;
 
 	public void splitExpenses() {
 		expenses = expenseRepository.getExpenses();
-		totalExpenses = expenses.size();
-		balanceSheetMatrix = new Double[totalExpenses][totalExpenses];
-
-		balanceSheetMatrix = utilityService.initializeArrayWithZeros(balanceSheetMatrix);
+		
+		
 		indexingService.setIndexes();
-
-		expenses.forEach(expense -> {
-			Integer currentExpensePayingUserIndex = indexRepository.getIndexByUser(expense.getPaidBy());
-
-			for (int currentUser = 0; currentUser < totalExpenses; currentUser++) {
-				if (currentExpensePayingUserIndex != currentUser)
-					balanceSheetMatrix[currentUser][currentExpensePayingUserIndex] += utilityService
-							.roundOfValueUptoTwoDecimal(expense.getAmount() / totalExpenses);
-				;
-			}
-		});
-
+		balanceSheetMatrix = distributeAmountAmongUsers(expenses);	
 		settleUpService.calculateEachUserTotalAmountToPayOrGet(balanceSheetMatrix);
 	}
 
+	public Double[][] distributeAmountAmongUsers(List<Expense> expenses) {
+		int totalNumberOfExpenses = expenses.size();
+		Double [][] balanceSheetMatrix = new Double[totalNumberOfExpenses][totalNumberOfExpenses];
+		balanceSheetMatrix = utility.initialize2DArrayWithZeros(balanceSheetMatrix);
+		for(Expense expense: expenses) {
+		
+			Integer currentExpensePayingUserIndex = indexRepository.getIndexByUser(expense.getPaidBy());
+
+			for (int currentUser = 0; currentUser < totalNumberOfExpenses; currentUser++) {
+				if (currentExpensePayingUserIndex != currentUser)
+					balanceSheetMatrix[currentUser][currentExpensePayingUserIndex] += utility
+							.roundOfValueUptoTwoDecimal(expense.getAmount() / totalNumberOfExpenses);
+				;
+			}
+		};
+		return balanceSheetMatrix;
+	}
 }

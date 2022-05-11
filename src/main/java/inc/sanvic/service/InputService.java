@@ -4,19 +4,27 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 import inc.sanvic.exception.InvalidAmountException;
 import inc.sanvic.exception.InvalidInputFormatException;
-import inc.sanvic.repository.ExpenseRepository;
 import inc.sanvic.repository.UserRepository;
 
+@Service
 public class InputService {
 	private String userName;
 	private Double amount;
-	private ExpenseService expenseService;
 	private String USER_INPUT_BREAK_STATEMENT = "done";
 
-	public InputService(ExpenseRepository expenseRepository, UserRepository userRepository) {
-		expenseService = new ExpenseService(expenseRepository, userRepository);
+	UserRepository userRepository;
+	ExpenseService expenseService;
+
+	@Autowired
+	public InputService(UserRepository userRepository, ExpenseService expenseService) {
+		super();
+		this.userRepository = userRepository;
+		this.expenseService = expenseService;
 	}
 
 	public void takeUserInput() {

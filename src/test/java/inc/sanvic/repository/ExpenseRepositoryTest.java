@@ -2,20 +2,17 @@ package inc.sanvic.repository;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.InjectMocks;
+import org.springframework.boot.test.context.SpringBootTest;
 
 import inc.sanvic.model.Expense;
 import inc.sanvic.model.User;
 
+@SpringBootTest
 class ExpenseRepositoryTest {
-
+	@InjectMocks
 	private ExpenseRepository expenseRepository;
-
-	@BeforeEach
-	void init() {
-		expenseRepository = new ExpenseRepository();
-	}
 
 	@Test
 	void shouldBeAbleToAddExpenses() {

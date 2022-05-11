@@ -10,7 +10,6 @@ import lombok.Getter;
 import lombok.Setter;
 
 @Getter
-@Setter
 @Repository
 public class UserRepository {
 

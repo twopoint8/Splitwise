@@ -1,28 +1,18 @@
 package inc.sanvic.service;
 
 import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mock;
+import org.springframework.boot.test.context.SpringBootTest;
 
-import inc.sanvic.repository.ExpenseRepository;
-import inc.sanvic.repository.IndexRepository;
-
+@SpringBootTest
 class SettleUpExpenseServiceTest {
 
-	private ExpenseRepository expenseRepository;
-	private IndexRepository indexRepository;
-	private SettleUpExpenseService settleUpService;
-
-	@BeforeEach
-	void init() {
-		expenseRepository = new ExpenseRepository();
-		indexRepository = new IndexRepository();
-		settleUpService = mock(SettleUpExpenseService.class);
-	}
+	@Mock
+	SettleUpExpenseService settleUpService;
 
 	@Test
 	void shouldCallCalculateEachUserTotalAmountToPayOrGetMethod() {

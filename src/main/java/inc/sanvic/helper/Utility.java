@@ -1,8 +1,11 @@
-package inc.sanvic.service;
+package inc.sanvic.helper;
 
 import java.util.Arrays;
 
-public class UtilityService {
+import org.springframework.stereotype.Component;
+
+@Component
+public class Utility {
 
 	public Double roundOfValueUptoTwoDecimal(Double amount) {
 		return (double) Math.round(amount * 100) / 100;
@@ -13,11 +16,11 @@ public class UtilityService {
 		return totalAmountPerUserList;
 	}
 
-	public Double[][] initializeArrayWithZeros(Double balanceSheetMatrix[][]) {
+	public Double[][] initialize2DArrayWithZeros(Double balanceSheetMatrix[][]) {
 		Arrays.stream(balanceSheetMatrix).forEach(a -> Arrays.fill(a, 0.0));
 		return balanceSheetMatrix;
 	}
-	
+
 	public Integer getInexOfMinimumValue(Double amount[]) {
 		int indexOfMinimumValue = 0;
 		for (int currentIndex = 1; currentIndex < amount.length; currentIndex++)

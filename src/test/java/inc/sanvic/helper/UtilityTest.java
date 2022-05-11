@@ -1,4 +1,4 @@
-package inc.sanvic.service;
+package inc.sanvic.helper;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -7,21 +7,18 @@ import java.math.BigDecimal;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
-class UtilityServiceTest {
-
-	private UtilityService utilityService;
-
-	@BeforeEach
-	void init() {
-		utilityService = new UtilityService();
-	}
+import org.mockito.InjectMocks;
+import org.springframework.boot.test.context.SpringBootTest;
+@SpringBootTest
+class UtilityTest {
+	@InjectMocks
+	Utility utility;
 
 	@Test
 	void shouldReturnValueUptoTwoDecimal() {
 		final Double testValue = 120.246452;
 
-		final Double actualValue = utilityService.roundOfValueUptoTwoDecimal(testValue);
+		final Double actualValue = utility.roundOfValueUptoTwoDecimal(testValue);
 
 		assertTrue(BigDecimal.valueOf(actualValue).scale() <= 2);
 	}
@@ -31,7 +28,7 @@ class UtilityServiceTest {
 		final Double[] testArray = new Double[5];
 		final Double expectedValue = 0.0;
 
-		final Double[] returnedArray = utilityService.initializeArrayWithZeros(testArray);
+		final Double[] returnedArray = utility.initializeArrayWithZeros(testArray);
 
 		assertEquals(expectedValue, returnedArray[2]);
 	}
@@ -41,7 +38,7 @@ class UtilityServiceTest {
 		final Double[][] testArray = new Double[2][2];
 		final Double expectedValue = 0.0;
 
-		final Double[][] returnedArray = utilityService.initializeArrayWithZeros(testArray);
+		final Double[][] returnedArray = utility.initialize2DArrayWithZeros(testArray);
 
 		assertEquals(expectedValue, returnedArray[1][0]);
 	}
@@ -51,7 +48,7 @@ class UtilityServiceTest {
 		final Double[] testArray = { 102.0, 203.2, 100.3, 50.5, 452.3 };
 		final Integer expectedValue = 3;
 
-		final Integer actualValue = utilityService.getInexOfMinimumValue(testArray);
+		final Integer actualValue = utility.getInexOfMinimumValue(testArray);
 
 		assertEquals(expectedValue, actualValue);
 	}
@@ -61,7 +58,7 @@ class UtilityServiceTest {
 		final Double[] testArray = { 102.0, 2013.2, 100.3, 50.5, 452.3 };
 		final Integer expectedValue = 1;
 
-		final Integer actualValue = utilityService.getInexOfMaximumValue(testArray);
+		final Integer actualValue = utility.getInexOfMaximumValue(testArray);
 
 		assertEquals(expectedValue, actualValue);
 	}
@@ -72,8 +69,9 @@ class UtilityServiceTest {
 		final Double second = 12.6;
 		final Double expectedValue = 12.6;
 
-		final Double actualValue = utilityService.findMinimumOfTwoValues(first, second);
+		final Double actualValue = utility.findMinimumOfTwoValues(first, second);
 
 		assertEquals(expectedValue, actualValue);
 	}
+
 }

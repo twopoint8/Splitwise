@@ -10,7 +10,6 @@ import lombok.Getter;
 import lombok.Setter;
 
 @Getter
-@Setter
 @Repository
 public class ExpenseRepository {
 
@@ -23,5 +22,4 @@ public class ExpenseRepository {
 	public void addExpense(Expense expense) {
 		expenses.add(expense);
 	}
-
 }

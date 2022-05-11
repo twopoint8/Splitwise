@@ -4,19 +4,16 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.InjectMocks;
+import org.springframework.boot.test.context.SpringBootTest;
 
 import inc.sanvic.model.User;
 
+@SpringBootTest
 class UserRepositoryTest {
-
-	private UserRepository userRepository;
-
-	@BeforeEach
-	void init() {
-		userRepository = new UserRepository();
-	}
+	@InjectMocks
+	UserRepository userRepository;
 
 	@Test
 	void shouldBeAbleToAddUser() {

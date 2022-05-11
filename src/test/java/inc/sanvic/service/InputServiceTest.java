@@ -2,28 +2,34 @@ package inc.sanvic.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.InjectMocks;
+import org.springframework.boot.test.context.SpringBootTest;
 
 import inc.sanvic.exception.InvalidAmountException;
 import inc.sanvic.exception.InvalidInputFormatException;
-import inc.sanvic.repository.ExpenseRepository;
-import inc.sanvic.repository.UserRepository;
 
+@SpringBootTest
 public class InputServiceTest {
+	@InjectMocks
+	InputService inputService;
 
-	private InputService inputService;
-	private UserRepository userRepository;
-	private ExpenseRepository expenseRepository;
-
-	@BeforeEach
-	void init() {
-		expenseRepository = new ExpenseRepository();
-		userRepository = new UserRepository();
-		inputService = new InputService(expenseRepository, userRepository);
+	@Test
+	public void shouldTakeUserInput() {
+		InputService inputService = mock(InputService.class);
+		doNothing().when(inputService).takeUserInput();
+		
+		inputService.takeUserInput();
+		
+		verify(inputService,times(1)).takeUserInput();
+		
 	}
-
+	
 	@Test
 	public void shouldReturnValidAmountValue() throws NumberFormatException, InvalidAmountException {
 		final String amount = "100";
@@ -64,6 +70,7 @@ public class InputServiceTest {
 		final String testConsoleInput = "testUser,244";
 		final Integer expectedValue = 2;
 		final String expectedTestUserName = "testUser";
+
 		assertEquals(expectedValue, inputService.extractValuesFromInput(testConsoleInput).size());
 		assertEquals(expectedTestUserName, inputService.extractValuesFromInput(testConsoleInput).get(0));
 	}
