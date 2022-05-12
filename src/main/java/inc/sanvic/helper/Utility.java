@@ -21,7 +21,7 @@ public class Utility {
 		return balanceSheetMatrix;
 	}
 
-	public Integer getInexOfMinimumValue(Double amount[]) {
+	public Integer getIndexOfMinimumValue(Double amount[]) {
 		int indexOfMinimumValue = 0;
 		for (int currentIndex = 1; currentIndex < amount.length; currentIndex++)
 			if (amount[currentIndex] < amount[indexOfMinimumValue])
@@ -29,7 +29,7 @@ public class Utility {
 		return indexOfMinimumValue;
 	}
 
-	public Integer getInexOfMaximumValue(Double amount[]) {
+	public Integer getIndexOfMaximumValue(Double amount[]) {
 		int indexOfMaximumValue = 0;
 		for (int currentIndex = 1; currentIndex < amount.length; currentIndex++)
 			if (amount[currentIndex] > amount[indexOfMaximumValue])

@@ -7,7 +7,6 @@ import org.springframework.stereotype.Repository;
 
 import inc.sanvic.model.Expense;
 import lombok.Getter;
-import lombok.Setter;
 
 @Getter
 @Repository

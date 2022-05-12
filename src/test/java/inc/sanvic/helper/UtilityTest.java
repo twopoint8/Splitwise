@@ -48,7 +48,7 @@ class UtilityTest {
 		final Double[] testArray = { 102.0, 203.2, 100.3, 50.5, 452.3 };
 		final Integer expectedValue = 3;
 
-		final Integer actualValue = utility.getInexOfMinimumValue(testArray);
+		final Integer actualValue = utility.getIndexOfMinimumValue(testArray);
 
 		assertEquals(expectedValue, actualValue);
 	}
@@ -58,16 +58,27 @@ class UtilityTest {
 		final Double[] testArray = { 102.0, 2013.2, 100.3, 50.5, 452.3 };
 		final Integer expectedValue = 1;
 
-		final Integer actualValue = utility.getInexOfMaximumValue(testArray);
+		final Integer actualValue = utility.getIndexOfMaximumValue(testArray);
 
 		assertEquals(expectedValue, actualValue);
 	}
 
 	@Test
-	void shouldReturnMinimumValue() {
+	void shouldReturnMinimumValueWhenFirstIsMaximum() {
 		final Double first = 105.2;
 		final Double second = 12.6;
 		final Double expectedValue = 12.6;
+
+		final Double actualValue = utility.findMinimumOfTwoValues(first, second);
+
+		assertEquals(expectedValue, actualValue);
+	}
+	
+	@Test
+	void shouldReturnMinimumValueWhenSecondIsMaximum() {
+		final Double first = 10.2;
+		final Double second = 12.6;
+		final Double expectedValue = 10.2;
 
 		final Double actualValue = utility.findMinimumOfTwoValues(first, second);
 

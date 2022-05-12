@@ -26,9 +26,9 @@ public class SettleUpExpenseService {
 	@Autowired
 	Utility utility;
 
-	private void settleAmountAmongUsers(Double totalAmountPerUserList[]) {
-		int indexOfMaximumAmount = utility.getInexOfMaximumValue(totalAmountPerUserList),
-				indexOfMinimumAmount = utility.getInexOfMinimumValue(totalAmountPerUserList);
+	public void settleAmountAmongUsers(Double totalAmountPerUserList[]) {
+		int indexOfMaximumAmount = utility.getIndexOfMaximumValue(totalAmountPerUserList),
+				indexOfMinimumAmount = utility.getIndexOfMinimumValue(totalAmountPerUserList);
 		if (totalAmountPerUserList[indexOfMaximumAmount] == 0 && totalAmountPerUserList[indexOfMinimumAmount] == 0)
 			return;
 
@@ -56,7 +56,7 @@ public class SettleUpExpenseService {
 		settleAmountAmongUsers(totalAmountPerUserList);
 	}
 
-	private void printOutput(String whoPays, String whomToPay, Double howMuchToPay) {
-		System.out.println(whoPays + " pays " + howMuchToPay + " to Person " + whomToPay);
+	public void printOutput(String whoPays, String whomToPay, Double howMuchToPay) {
+		System.out.println(whoPays + " pays " + howMuchToPay + " to " + whomToPay);
 	}
 }
