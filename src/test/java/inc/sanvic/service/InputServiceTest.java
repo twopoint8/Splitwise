@@ -7,6 +7,8 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
+import java.math.BigDecimal;
+
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -22,18 +24,18 @@ public class InputServiceTest {
 	@Test
 	public void shouldTakeUserInput() {
 		InputService inputService = mock(InputService.class);
-		doNothing().when(inputService).takeUserInput();
+		doNothing().when(inputService).takeInputFromConsole();
 		
-		inputService.takeUserInput();
+		inputService.takeInputFromConsole();
 		
-		verify(inputService,times(1)).takeUserInput();
+		verify(inputService,times(1)).takeInputFromConsole();
 		
 	}
 	
 	@Test
 	public void shouldReturnValidAmountValue() throws NumberFormatException, InvalidAmountException {
 		final String amount = "100";
-		final Double expectedValue = 100D;
+		final BigDecimal expectedValue = BigDecimal.valueOf(100);
 
 		assertEquals(expectedValue, inputService.pasrseAndValidateAmount(amount));
 	}
@@ -61,7 +63,7 @@ public class InputServiceTest {
 		final String testConsoleInput = "testUser 244";
 
 		assertThrows(InvalidInputFormatException.class, () -> {
-			inputService.extractValuesFromInput(testConsoleInput);
+			inputService.extractNameAndAmount(testConsoleInput);
 		});
 	}
 
@@ -71,8 +73,8 @@ public class InputServiceTest {
 		final Integer expectedValue = 2;
 		final String expectedTestUserName = "testUser";
 
-		assertEquals(expectedValue, inputService.extractValuesFromInput(testConsoleInput).size());
-		assertEquals(expectedTestUserName, inputService.extractValuesFromInput(testConsoleInput).get(0));
+		assertEquals(expectedValue, inputService.extractNameAndAmount(testConsoleInput).size());
+		assertEquals(expectedTestUserName, inputService.extractNameAndAmount(testConsoleInput).get(0));
 	}
 
 }

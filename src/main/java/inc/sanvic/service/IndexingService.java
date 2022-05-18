@@ -12,8 +12,8 @@ import inc.sanvic.repository.IndexRepository;
 @Service
 public class IndexingService {
 
-	IndexRepository indexRepository;
-	ExpenseRepository expenseRepository;
+	private IndexRepository indexRepository;
+	private ExpenseRepository expenseRepository;
 
 	@Autowired
 	public IndexingService(IndexRepository indexRepository, ExpenseRepository expenseRepository) {
@@ -25,8 +25,8 @@ public class IndexingService {
 		List<Expense> expenses = expenseRepository.getExpenses();
 		Integer currentIndex = 0;
 		for (Expense expense : expenses) {
-			indexRepository.setUserMappingToIndex(expense.getPaidBy(), currentIndex);
-			indexRepository.setIndexMappingToUser(currentIndex++, expense.getPaidBy());
+			indexRepository.setFriendMappingToIndex(expense.getPaidBy(), currentIndex);
+			indexRepository.setIndexMappingToFriend(currentIndex++, expense.getPaidBy());
 		}
 	}
 }

@@ -15,37 +15,28 @@ class UtilityTest {
 	Utility utility;
 
 	@Test
-	void shouldReturnValueUptoTwoDecimal() {
-		final Double testValue = 120.246452;
-
-		final Double actualValue = utility.roundOfValueUptoTwoDecimal(testValue);
-
-		assertTrue(BigDecimal.valueOf(actualValue).scale() <= 2);
-	}
-
-	@Test
 	void shouldInitializeWholeArrayWithZero() {
-		final Double[] testArray = new Double[5];
-		final Double expectedValue = 0.0;
+		final BigDecimal[] testArray = new BigDecimal[5];
+		final BigDecimal expectedValue = BigDecimal.ZERO;
 
-		final Double[] returnedArray = utility.initializeArrayWithZeros(testArray);
+		final BigDecimal[] returnedArray = utility.initializeArrayWithZeros(testArray);
 
 		assertEquals(expectedValue, returnedArray[2]);
 	}
 
 	@Test
 	void shouldInitializeWhole2DArrayWithZero() {
-		final Double[][] testArray = new Double[2][2];
-		final Double expectedValue = 0.0;
+		final BigDecimal[][] testArray = new BigDecimal[2][2];
+		final BigDecimal expectedValue = BigDecimal.ZERO;
 
-		final Double[][] returnedArray = utility.initialize2DArrayWithZeros(testArray);
+		final BigDecimal[][] returnedArray = utility.initialize2DArrayWithZeros(testArray);
 
 		assertEquals(expectedValue, returnedArray[1][0]);
 	}
 
 	@Test
 	void shouldReturnIndexOfMinimumValueInTheGivenArray() {
-		final Double[] testArray = { 102.0, 203.2, 100.3, 50.5, 452.3 };
+		final BigDecimal[] testArray = { BigDecimal.TEN, BigDecimal.valueOf(203.5), BigDecimal.valueOf(502.5), BigDecimal.ONE, BigDecimal.valueOf(452.3) };
 		final Integer expectedValue = 3;
 
 		final Integer actualValue = utility.getIndexOfMinimumValue(testArray);
@@ -55,8 +46,8 @@ class UtilityTest {
 
 	@Test
 	void shouldReturnIndexOfMaximumValueInTheGivenArray() {
-		final Double[] testArray = { 102.0, 2013.2, 100.3, 50.5, 452.3 };
-		final Integer expectedValue = 1;
+		final BigDecimal[] testArray = { BigDecimal.TEN, BigDecimal.valueOf(203.5), BigDecimal.valueOf(502.5), BigDecimal.ONE, BigDecimal.valueOf(452.3) };
+		final Integer expectedValue = 2;
 
 		final Integer actualValue = utility.getIndexOfMaximumValue(testArray);
 
@@ -65,22 +56,21 @@ class UtilityTest {
 
 	@Test
 	void shouldReturnMinimumValueWhenFirstIsMaximum() {
-		final Double first = 105.2;
-		final Double second = 12.6;
-		final Double expectedValue = 12.6;
+		final BigDecimal first = BigDecimal.valueOf(203.5);
+		final BigDecimal second = BigDecimal.valueOf(13.5);
+		final BigDecimal expectedValue = BigDecimal.valueOf(13.5);
 
-		final Double actualValue = utility.findMinimumOfTwoValues(first, second);
+		final BigDecimal actualValue = utility.findMinimumOfTwoValues(first, second);
 
 		assertEquals(expectedValue, actualValue);
 	}
 	
 	@Test
 	void shouldReturnMinimumValueWhenSecondIsMaximum() {
-		final Double first = 10.2;
-		final Double second = 12.6;
-		final Double expectedValue = 10.2;
-
-		final Double actualValue = utility.findMinimumOfTwoValues(first, second);
+		final BigDecimal first = BigDecimal.valueOf(10.2);
+		final BigDecimal second = BigDecimal.valueOf(12.5);
+		final BigDecimal expectedValue = BigDecimal.valueOf(10.2);
+		final BigDecimal actualValue = utility.findMinimumOfTwoValues(first, second);
 
 		assertEquals(expectedValue, actualValue);
 	}

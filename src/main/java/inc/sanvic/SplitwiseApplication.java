@@ -19,7 +19,7 @@ public class SplitwiseApplication {
 		ConfigurableApplicationContext context = SpringApplication.run(SplitwiseApplication.class, args);
 		 SplitwiseApplication splitwiseApplication = context.getBean(SplitwiseApplication.class);
 		System.out.println("Once finished with input write done...");
-		splitwiseApplication.inputService.takeUserInput();
+		splitwiseApplication.inputService.takeInputFromConsole();
 		splitwiseApplication.expenseManagerService.splitExpenses();
 	}
 }

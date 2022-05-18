@@ -5,35 +5,35 @@ import java.util.Map;
 
 import org.springframework.stereotype.Repository;
 
-import inc.sanvic.model.User;
+import inc.sanvic.model.Friend;
 import lombok.Getter;
 
 @Getter
 @Repository
 public class IndexRepository {
-	private Map<User, Integer> userMappingToIndex;
-	private Map<Integer, User> indexMappingToUser;
+	private Map<Friend, Integer> friendMappingToIndex;
+	private Map<Integer, Friend> indexMappingToFriend;
 
 	
 	public IndexRepository() {
-		userMappingToIndex = new HashMap<>();
-		indexMappingToUser = new HashMap<>();
+		friendMappingToIndex = new HashMap<>();
+		indexMappingToFriend = new HashMap<>();
 	}
 
-	public Integer getIndexByUser(User user) {
-		return userMappingToIndex.get(user);
+	public Integer getIndexByFriend(Friend friend) {
+		return friendMappingToIndex.get(friend);
 	}
 
-	public void setUserMappingToIndex(User user, Integer index) {
-		userMappingToIndex.put(user, index);
+	public void setFriendMappingToIndex(Friend friend, Integer index) {
+		friendMappingToIndex.put(friend, index);
 	}
 
-	public User getUserByIndex(Integer index) {
-		return indexMappingToUser.get(index);
+	public Friend getFriendByIndex(Integer index) {
+		return indexMappingToFriend.get(index);
 	}
 
-	public void setIndexMappingToUser(Integer index, User user) {
-		indexMappingToUser.put(index, user);
+	public void setIndexMappingToFriend(Integer index, Friend friend) {
+		indexMappingToFriend.put(index, friend);
 	}
 	
 }

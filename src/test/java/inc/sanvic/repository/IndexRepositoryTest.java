@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import inc.sanvic.model.User;
+import inc.sanvic.model.Friend;
 import inc.sanvic.service.IndexingService;
 
 @SpringBootTest
@@ -20,53 +20,53 @@ class IndexRepositoryTest {
 
 	@Test
 	void shouldReturnValidIndexForAGivenUser() {
-		final User testUser = new User("testUser");
-		final User dummyUser = new User("dummyUser");
+		final Friend testUser = Friend.createFriendInstance("testUser");
+		final Friend dummyUser = Friend.createFriendInstance("dummyUser");
 		final int expectedValue = 1;
 
-		indexRepository.setUserMappingToIndex(dummyUser, 0);
-		indexRepository.setUserMappingToIndex(testUser, 1);
+		indexRepository.setFriendMappingToIndex(dummyUser, 0);
+		indexRepository.setFriendMappingToIndex(testUser, 1);
 
-		assertEquals(expectedValue, indexRepository.getIndexByUser(testUser));
+		assertEquals(expectedValue, indexRepository.getIndexByFriend(testUser));
 	}
 
 	@Test
 	void shouldReturnValidUserForAGivenIndex() {
-		final User testUser = new User("testUser");
-		final User dummyUser = new User("dummyUser");
+		final Friend testUser = Friend.createFriendInstance("testUser");
+		final Friend dummyUser = Friend.createFriendInstance("dummyUser");
 		final String expectedValue = "testUser";
 
-		indexRepository.setIndexMappingToUser(0, testUser);
-		indexRepository.setIndexMappingToUser(1, dummyUser);
+		indexRepository.setIndexMappingToFriend(0, testUser);
+		indexRepository.setIndexMappingToFriend(1, dummyUser);
 
-		assertEquals(expectedValue, indexRepository.getUserByIndex(0).getName());
+		assertEquals(expectedValue, indexRepository.getFriendByIndex(0).getName());
 	}
 
 	@Test
 	void shouldAddValuesToUserMappingToIndex() {
-		final User testUser = new User("testUser");
-		final User dummyUser = new User("dummyUser");
+		final Friend testUser = Friend.createFriendInstance("testUser");
+		final Friend dummyUser = Friend.createFriendInstance("dummyUser");
 		final Integer testUserIndex = 0;
 		final Integer dummyUserIndex = 1;
 		final int expectedValue = 2;
 
-		indexRepository.setUserMappingToIndex(testUser, testUserIndex);
-		indexRepository.setUserMappingToIndex(dummyUser, dummyUserIndex);
+		indexRepository.setFriendMappingToIndex(testUser, testUserIndex);
+		indexRepository.setFriendMappingToIndex(dummyUser, dummyUserIndex);
 
-		assertEquals(expectedValue, indexRepository.getUserMappingToIndex().size());
+		assertEquals(expectedValue, indexRepository.getFriendMappingToIndex().size());
 	}
 
 	@Test
 	void shouldAddValuesToIndexMappingToUser() {
-		final User testUser = new User("testUser");
-		final User dummyUser = new User("dummyUser");
+		final Friend testUser = Friend.createFriendInstance("testUser");
+		final Friend dummyUser = Friend.createFriendInstance("dummyUser");
 		final Integer testUserIndex = 0;
 		final Integer dummyUserIndex = 1;
 		final int expectedValue = 2;
 
-		indexRepository.setIndexMappingToUser(testUserIndex, testUser);
-		indexRepository.setIndexMappingToUser(dummyUserIndex, dummyUser);
+		indexRepository.setIndexMappingToFriend(testUserIndex, testUser);
+		indexRepository.setIndexMappingToFriend(dummyUserIndex, dummyUser);
 
-		assertEquals(expectedValue, indexRepository.getIndexMappingToUser().size());
+		assertEquals(expectedValue, indexRepository.getIndexMappingToFriend().size());
 	}
 }

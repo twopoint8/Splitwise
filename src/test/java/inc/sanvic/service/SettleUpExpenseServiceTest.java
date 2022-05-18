@@ -8,6 +8,7 @@ import static org.mockito.Mockito.when;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,7 +21,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import inc.sanvic.helper.Utility;
 import inc.sanvic.model.Expense;
-import inc.sanvic.model.User;
+import inc.sanvic.model.Friend;
 import inc.sanvic.repository.ExpenseRepository;
 import inc.sanvic.repository.IndexRepository;
 
@@ -39,42 +40,41 @@ class SettleUpExpenseServiceTest {
 
 	@Test
 	void shouldCallCalculateEachUserTotalAmountToPayOrGetMethod() {
-		final Double[][] dummyBalanceSheetMatrix = { { 0.0, 50.0 }, { 10.0, 0.0 } };
-		final Expense travelExpense = new Expense(100.0, new User("testUser"));
-		final Expense foodExpense = new Expense(20.0, new User("dummyUser"));
+		final BigDecimal[][] dummyBalanceSheetMatrix = { { BigDecimal.ZERO, BigDecimal.valueOf(50.0) }, { BigDecimal.TEN, BigDecimal.ZERO } };
+		final Expense travelExpense = Expense.createExpense(BigDecimal.valueOf(100.0),Friend.createFriendInstance("testUser"));
+		final Expense foodExpense = Expense.createExpense(BigDecimal.valueOf(20.0), Friend.createFriendInstance("dummyUser"));
 		final List<Expense> expenses = new ArrayList<Expense>();
 		expenses.add(travelExpense);
 		expenses.add(foodExpense);
 
-		doNothing().when(settleUpService).settleAmountAmongUsers(Mockito.any());
+		doNothing().when(settleUpService).settleAmountAmongFriends(Mockito.any());
 		when(expenseRepository.getExpenses()).thenReturn(expenses);
 		when(utility.initializeArrayWithZeros(Mockito.any())).thenCallRealMethod();
-		when(utility.roundOfValueUptoTwoDecimal(Mockito.anyDouble())).thenCallRealMethod();
 
-		settleUpService.calculateEachUserTotalAmountToPayOrGet(dummyBalanceSheetMatrix);
+		settleUpService.calculateEachFriendTotalAmountToPayOrGet(dummyBalanceSheetMatrix);
 
 		verify(expenseRepository, times(1)).getExpenses();
 		verify(utility, times(1)).initializeArrayWithZeros(Mockito.any());
-		verify(utility, times(8)).roundOfValueUptoTwoDecimal(Mockito.anyDouble());
+		
 	}
 
 	@Test
 	void shouldCallsettleAmountAmongUsersMethod() {
-		final Double[] totalAmountPerUserList = { 40.0, -40.0 };
+		final BigDecimal[] totalAmountPerUserList = { BigDecimal.TEN, BigDecimal.TEN.negate() };
 
 		doNothing().when(settleUpService).printOutput(Mockito.any(), Mockito.any(), Mockito.any());
 
 		when(utility.getIndexOfMaximumValue(Mockito.any())).thenCallRealMethod();
 		when(utility.getIndexOfMinimumValue(Mockito.any())).thenCallRealMethod();
-		when(utility.findMinimumOfTwoValues(Mockito.anyDouble(), Mockito.anyDouble())).thenCallRealMethod();
-		when(indexRepository.getUserByIndex(Mockito.anyInt())).thenReturn(new User("testUser"), new User("dummyUser"));
+		when(utility.findMinimumOfTwoValues(Mockito.any(), Mockito.any())).thenCallRealMethod();
+		when(indexRepository.getFriendByIndex(Mockito.anyInt())).thenReturn(Friend.createFriendInstance("testUser"), Friend.createFriendInstance("dummyUser"));
 
-		settleUpService.settleAmountAmongUsers(totalAmountPerUserList);
+		settleUpService.settleAmountAmongFriends(totalAmountPerUserList);
 
 		verify(utility, times(2)).getIndexOfMaximumValue(Mockito.any());
 		verify(utility, times(2)).getIndexOfMinimumValue(Mockito.any());
-		verify(utility, times(1)).findMinimumOfTwoValues(Mockito.anyDouble(), Mockito.anyDouble());
-		verify(indexRepository, times(2)).getUserByIndex(Mockito.anyInt());
+		verify(utility, times(1)).findMinimumOfTwoValues(Mockito.any(), Mockito.any());
+		verify(indexRepository, times(2)).getFriendByIndex(Mockito.anyInt());
 	}
 
 	@Test
@@ -85,7 +85,7 @@ class SettleUpExpenseServiceTest {
 
 		System.setOut(new PrintStream(outContent));
 
-		settleUpService.printOutput("testUser", "dummyUser", 50.0);
+		settleUpService.printOutput("testUser", "dummyUser", BigDecimal.valueOf(50.0));
 
 		assertEquals(expectedValue, outContent.toString());
 

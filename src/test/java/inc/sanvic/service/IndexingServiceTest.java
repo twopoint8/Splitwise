@@ -3,6 +3,7 @@ package inc.sanvic.service;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -14,7 +15,7 @@ import org.mockito.Mock;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import inc.sanvic.model.Expense;
-import inc.sanvic.model.User;
+import inc.sanvic.model.Friend;
 import inc.sanvic.repository.ExpenseRepository;
 import inc.sanvic.repository.IndexRepository;
 
@@ -32,22 +33,22 @@ class IndexingServiceTest {
 	void shouldSetIndexesForGivenExpenses() {
 
 		final int expectedSize = 2;
-		final User testUser1 = new User("testUser1");
-		final User testUser2 = new User("testUser2");
-		final Map<User, Integer> userMappingToIndex = new HashMap<User, Integer>();
+		final Friend testUser1 =Friend.createFriendInstance("testUser1");
+		final Friend testUser2 = Friend.createFriendInstance("testUser2");
+		final Map<Friend, Integer> userMappingToIndex = new HashMap<Friend, Integer>();
 		final List<Expense> expenses = new ArrayList<>();
 
 		userMappingToIndex.put(testUser1, 0);
 		userMappingToIndex.put(testUser2, 1);
-		expenses.add(new Expense(100.0, testUser1));
-		expenses.add(new Expense(500.0, testUser2));
+		expenses.add(Expense.createExpense(BigDecimal.valueOf(100.0), testUser1));
+		expenses.add(Expense.createExpense(BigDecimal.valueOf(500.0), testUser2));
 
 		when(expenseRepository.getExpenses()).thenReturn(expenses);
-		when(indexRepository.getUserMappingToIndex()).thenReturn(userMappingToIndex);
+		when(indexRepository.getFriendMappingToIndex()).thenReturn(userMappingToIndex);
 
 		indexingService.setIndexes();
 
-		assertEquals(expectedSize, indexRepository.getUserMappingToIndex().size());
+		assertEquals(expectedSize, indexRepository.getFriendMappingToIndex().size());
 	}
 
 }

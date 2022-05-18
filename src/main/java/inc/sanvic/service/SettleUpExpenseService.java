@@ -1,5 +1,7 @@
 package inc.sanvic.service;
 
+import java.math.BigDecimal;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -10,53 +12,59 @@ import inc.sanvic.repository.IndexRepository;
 @Service
 public class SettleUpExpenseService {
 
-	ExpenseRepository expenseRepository;
-	IndexRepository indexRepository;
+	private Utility utility;
+	private ExpenseRepository expenseRepository;
+	private IndexRepository indexRepository;
+	private Integer totalExpenses;
 
 	@Autowired
 	public SettleUpExpenseService(ExpenseRepository expenseRepository, IndexRepository indexRepository,
 			Utility utility) {
-		super();
 		this.expenseRepository = expenseRepository;
 		this.indexRepository = indexRepository;
 		this.utility = utility;
 	}
 
-	private Integer totalExpenses;
-	@Autowired
-	Utility utility;
+	public void settleUpAmount(BigDecimal[][] balanceSheetMatrix) {
+		BigDecimal[] totalAmountPerFriend = calculateEachFriendTotalAmountToPayOrGet(balanceSheetMatrix);
+		settleAmountAmongFriends(totalAmountPerFriend);
+	}
 
-	public void settleAmountAmongUsers(Double totalAmountPerUserList[]) {
-		int indexOfMaximumAmount = utility.getIndexOfMaximumValue(totalAmountPerUserList),
-				indexOfMinimumAmount = utility.getIndexOfMinimumValue(totalAmountPerUserList);
-		if (totalAmountPerUserList[indexOfMaximumAmount] == 0 && totalAmountPerUserList[indexOfMinimumAmount] == 0)
+	public void settleAmountAmongFriends(BigDecimal[] totalAmountPerFriend) {
+		int indexOfMaximumAmount = utility.getIndexOfMaximumValue(totalAmountPerFriend);
+		int indexOfMinimumAmount = utility.getIndexOfMinimumValue(totalAmountPerFriend);
+		BigDecimal minimumAmountToPay = utility.findMinimumOfTwoValues(
+				totalAmountPerFriend[indexOfMinimumAmount].negate(), totalAmountPerFriend[indexOfMaximumAmount]);
+		
+		if (totalAmountPerFriend[indexOfMaximumAmount].compareTo(BigDecimal.ZERO) == 0
+				&& totalAmountPerFriend[indexOfMinimumAmount].compareTo(BigDecimal.ZERO) == 0)
 			return;
 
-		Double minimumAmountToPay = utility.findMinimumOfTwoValues(-totalAmountPerUserList[indexOfMinimumAmount],
-				totalAmountPerUserList[indexOfMaximumAmount]);
-		totalAmountPerUserList[indexOfMaximumAmount] -= minimumAmountToPay;
-		totalAmountPerUserList[indexOfMinimumAmount] += minimumAmountToPay;
-		printOutput(indexRepository.getUserByIndex(indexOfMinimumAmount).getName(),
-				indexRepository.getUserByIndex(indexOfMaximumAmount).getName(), minimumAmountToPay);
+		
+		totalAmountPerFriend[indexOfMaximumAmount] = totalAmountPerFriend[indexOfMaximumAmount]
+				.subtract(minimumAmountToPay);
+		totalAmountPerFriend[indexOfMinimumAmount] = totalAmountPerFriend[indexOfMinimumAmount]
+				.add(minimumAmountToPay);
+		
+		printOutput(indexRepository.getFriendByIndex(indexOfMinimumAmount).getName(),
+				indexRepository.getFriendByIndex(indexOfMaximumAmount).getName(), minimumAmountToPay);
 
-		settleAmountAmongUsers(totalAmountPerUserList);
+		settleAmountAmongFriends(totalAmountPerFriend);
 	}
 
-	public void calculateEachUserTotalAmountToPayOrGet(Double balanceSheetMatrix[][]) {
+	public BigDecimal[] calculateEachFriendTotalAmountToPayOrGet(BigDecimal[][] balanceSheetMatrix) {
 		totalExpenses = expenseRepository.getExpenses().size();
-		Double[] totalAmountPerUserList = new Double[totalExpenses];
-		utility.initializeArrayWithZeros(totalAmountPerUserList);
-		for (int indexOfCurrentUser = 0; indexOfCurrentUser < totalExpenses; indexOfCurrentUser++)
-			for (int indexOfOtherUser = 0; indexOfOtherUser < totalExpenses; indexOfOtherUser++)
-				totalAmountPerUserList[indexOfCurrentUser] = utility
-						.roundOfValueUptoTwoDecimal((totalAmountPerUserList[indexOfCurrentUser] + utility
-								.roundOfValueUptoTwoDecimal(balanceSheetMatrix[indexOfOtherUser][indexOfCurrentUser]
-										- balanceSheetMatrix[indexOfCurrentUser][indexOfOtherUser])));
-
-		settleAmountAmongUsers(totalAmountPerUserList);
+		BigDecimal[] totalAmountPerFriend = new BigDecimal[totalExpenses];
+		utility.initializeArrayWithZeros(totalAmountPerFriend);
+		for (int indexOfCurrentFriend = 0; indexOfCurrentFriend < totalExpenses; indexOfCurrentFriend++)
+			for (int indexOfOtherFriend = 0; indexOfOtherFriend < totalExpenses; indexOfOtherFriend++)
+				totalAmountPerFriend[indexOfCurrentFriend] = totalAmountPerFriend[indexOfCurrentFriend]
+						.add(balanceSheetMatrix[indexOfOtherFriend][indexOfCurrentFriend]
+								.subtract(balanceSheetMatrix[indexOfCurrentFriend][indexOfOtherFriend]));
+		return totalAmountPerFriend;
 	}
 
-	public void printOutput(String whoPays, String whomToPay, Double howMuchToPay) {
+	public void printOutput(String whoPays, String whomToPay, BigDecimal howMuchToPay) {
 		System.out.println(whoPays + " pays " + howMuchToPay + " to " + whomToPay);
 	}
 }

@@ -1,13 +1,29 @@
 package inc.sanvic.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.Setter;
+import java.math.BigDecimal;
 
-@Getter
-@Setter
-@AllArgsConstructor
 public class Expense {
-	private Double amount;
-	private User paidBy;
+	private BigDecimal amount;
+	private Friend paidBy;
+	
+	private Expense(BigDecimal amount, Friend paidBy) {
+		this.amount = amount;
+		this.paidBy = paidBy;
+	}
+	
+	public BigDecimal getAmount() {
+		return amount;
+	}
+
+	public void setAmount(BigDecimal amount) {
+		this.amount = amount;
+	}
+
+	public Friend getPaidBy() {
+		return paidBy;
+	}
+
+	public static Expense createExpense(BigDecimal amount, Friend paidBy) {
+		return new Expense(amount, paidBy);
+	}	
 }
