@@ -15,43 +15,41 @@ import inc.sanvic.repository.IndexRepository;
 @Service
 public class ExpenseManagerService {
 
-	private Double[][] balanceSheetMatrix;
+	private BigDecimal[][] balanceSheetMatrix;
 	private List<Expense> expenses;
 
 	@Autowired
-	Utility utility;
+	private Utility utility;
 
 	@Autowired
-	ExpenseRepository expenseRepository;
+	private ExpenseRepository expenseRepository;
 	@Autowired
-	IndexRepository indexRepository;
+	private IndexRepository indexRepository;
 	@Autowired
-	SettleUpExpenseService settleUpService;
+	private SettleUpExpenseService settleUpService;
 	@Autowired
-	IndexingService indexingService;
+	private IndexingService indexingService;
 
 	public void splitExpenses() {
-		expenses = expenseRepository.getExpenses();
-		
-		
+		expenses = expenseRepository.getExpenses();	
 		indexingService.setIndexes();
-		balanceSheetMatrix = distributeAmountAmongUsers(expenses);	
-		settleUpService.calculateEachUserTotalAmountToPayOrGet(balanceSheetMatrix);
+		balanceSheetMatrix = initialiseAndFillBalanceSheet(expenses);	
+		settleUpService.settleUpAmount(balanceSheetMatrix);
 	}
 
-	public Double[][] distributeAmountAmongUsers(List<Expense> expenses) {
-		int totalNumberOfExpenses = expenses.size();
-		Double [][] balanceSheetMatrix = new Double[totalNumberOfExpenses][totalNumberOfExpenses];
-		balanceSheetMatrix = utility.initialize2DArrayWithZeros(balanceSheetMatrix);
-		for(Expense expense: expenses) {
+	public BigDecimal[][] initialiseAndFillBalanceSheet(List<Expense> expenses) {
+		Integer totalNumberOfExpenses = expenses.size();
+		BigDecimal [][] balanceSheetMatrix = new BigDecimal[totalNumberOfExpenses][totalNumberOfExpenses];
 		
-			Integer currentExpensePayingUserIndex = indexRepository.getIndexByUser(expense.getPaidBy());
+		balanceSheetMatrix = utility.initialize2DArrayWithZeros(balanceSheetMatrix);
+		
+		for(Expense expense: expenses) {	
+			Integer currentExpensePayingFriendIndex = indexRepository.getIndexByFriend(expense.getPaidBy());
 
-			for (int currentUser = 0; currentUser < totalNumberOfExpenses; currentUser++) {
-				if (currentExpensePayingUserIndex != currentUser)
-					balanceSheetMatrix[currentUser][currentExpensePayingUserIndex] += utility
-							.roundOfValueUptoTwoDecimal(expense.getAmount() / totalNumberOfExpenses);
-				;
+			for (int currentFriendIndex = 0; currentFriendIndex < totalNumberOfExpenses; currentFriendIndex++) {
+				if (currentExpensePayingFriendIndex != currentFriendIndex)
+				balanceSheetMatrix[currentFriendIndex][currentExpensePayingFriendIndex] = balanceSheetMatrix[currentFriendIndex][currentExpensePayingFriendIndex].add((expense.getAmount().divide(new BigDecimal(totalNumberOfExpenses))));
+					
 			}
 		};
 		return balanceSheetMatrix;

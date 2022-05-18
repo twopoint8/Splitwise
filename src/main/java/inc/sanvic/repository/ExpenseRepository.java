@@ -18,12 +18,32 @@ import lombok.Getter;
 public class ExpenseRepository {
 
 	private List<Expense> expenses;
-
+	@Autowired
+	private FriendRepository friendRepository;
+	@Autowired
+	private Utility utility;
 	public ExpenseRepository() {
 		expenses = new ArrayList<>();
 	}
 
-	public void addExpense(Expense expense) {
-		expenses.add(expense);
+	public void addExpense(BigDecimal amount,String paidBy) {
+		if (friendRepository.isFriendExistsWithName(paidBy)) {
+			appendAmountForExistingFriend(amount, paidBy);
+		}
+		else {
+			addExpenseForNewFriend(amount, paidBy);
+		}		
+	}
+
+	private void addExpenseForNewFriend(BigDecimal amount, String paidBy) {
+		Friend friend = Friend.createFriendInstance(paidBy);
+		friendRepository.addFriend(friend);
+		
+		expenses.add(Expense.createExpense(amount, friend));
+	}
+
+	private void appendAmountForExistingFriend(BigDecimal amount, String paidBy) {
+		Optional<Expense> targetExpense = expenses.stream().filter(expense -> expense.getPaidBy().getName().equals(paidBy)).findFirst();
+				targetExpense.ifPresent(expense -> {expense.setAmount(expense.getAmount().add(amount));});
 	}
 }
