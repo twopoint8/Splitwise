@@ -2,28 +2,30 @@ package inc.sanvic.repository;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import inc.sanvic.helper.Utility;
 import inc.sanvic.model.Expense;
 import inc.sanvic.model.Friend;
-import lombok.Getter;
 
-@Getter
 @Repository
 public class ExpenseRepository {
 
 	private List<Expense> expenses;
 	@Autowired
 	private FriendRepository friendRepository;
-	@Autowired
-	private Utility utility;
+	
 	public ExpenseRepository() {
-		expenses = new ArrayList<>();
+		expenses = Collections.synchronizedList(new ArrayList<>());
+	}
+
+	
+	public List<Expense> getExpenses() {
+		return expenses;
 	}
 
 	public void addExpense(BigDecimal amount,String paidBy) {

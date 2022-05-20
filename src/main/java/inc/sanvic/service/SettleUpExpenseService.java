@@ -30,6 +30,18 @@ public class SettleUpExpenseService {
 		settleAmountAmongFriends(totalAmountPerFriend);
 	}
 
+	public BigDecimal[] calculateEachFriendTotalAmountToPayOrGet(BigDecimal[][] balanceSheetMatrix) {
+		totalExpenses = expenseRepository.getExpenses().size();
+		BigDecimal[] totalAmountPerFriend = new BigDecimal[totalExpenses];
+		utility.initializeArrayWithZeros(totalAmountPerFriend);
+		for (int indexOfCurrentFriend = 0; indexOfCurrentFriend < totalExpenses; indexOfCurrentFriend++)
+			for (int indexOfOtherFriend = 0; indexOfOtherFriend < totalExpenses; indexOfOtherFriend++)
+				totalAmountPerFriend[indexOfCurrentFriend] = totalAmountPerFriend[indexOfCurrentFriend]
+						.add(balanceSheetMatrix[indexOfOtherFriend][indexOfCurrentFriend]
+								.subtract(balanceSheetMatrix[indexOfCurrentFriend][indexOfOtherFriend]));
+		return totalAmountPerFriend;
+	}
+
 	public void settleAmountAmongFriends(BigDecimal[] totalAmountPerFriend) {
 		int indexOfMaximumAmount = utility.getIndexOfMaximumValue(totalAmountPerFriend);
 		int indexOfMinimumAmount = utility.getIndexOfMinimumValue(totalAmountPerFriend);
@@ -46,25 +58,10 @@ public class SettleUpExpenseService {
 		totalAmountPerFriend[indexOfMinimumAmount] = totalAmountPerFriend[indexOfMinimumAmount]
 				.add(minimumAmountToPay);
 		
-		printOutput(indexRepository.getFriendByIndex(indexOfMinimumAmount).getName(),
+		utility.printOutput(indexRepository.getFriendByIndex(indexOfMinimumAmount).getName(),
 				indexRepository.getFriendByIndex(indexOfMaximumAmount).getName(), minimumAmountToPay);
 
 		settleAmountAmongFriends(totalAmountPerFriend);
 	}
 
-	public BigDecimal[] calculateEachFriendTotalAmountToPayOrGet(BigDecimal[][] balanceSheetMatrix) {
-		totalExpenses = expenseRepository.getExpenses().size();
-		BigDecimal[] totalAmountPerFriend = new BigDecimal[totalExpenses];
-		utility.initializeArrayWithZeros(totalAmountPerFriend);
-		for (int indexOfCurrentFriend = 0; indexOfCurrentFriend < totalExpenses; indexOfCurrentFriend++)
-			for (int indexOfOtherFriend = 0; indexOfOtherFriend < totalExpenses; indexOfOtherFriend++)
-				totalAmountPerFriend[indexOfCurrentFriend] = totalAmountPerFriend[indexOfCurrentFriend]
-						.add(balanceSheetMatrix[indexOfOtherFriend][indexOfCurrentFriend]
-								.subtract(balanceSheetMatrix[indexOfCurrentFriend][indexOfOtherFriend]));
-		return totalAmountPerFriend;
-	}
-
-	public void printOutput(String whoPays, String whomToPay, BigDecimal howMuchToPay) {
-		System.out.println(whoPays + " pays " + howMuchToPay + " to " + whomToPay);
-	}
 }

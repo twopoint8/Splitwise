@@ -1,14 +1,17 @@
 package inc.sanvic.helper;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
 import java.math.BigDecimal;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.springframework.boot.test.context.SpringBootTest;
+
+import inc.sanvic.exception.NullOrEmptyStringException;
 @SpringBootTest
 class UtilityTest {
 	@InjectMocks
@@ -75,4 +78,30 @@ class UtilityTest {
 		assertEquals(expectedValue, actualValue);
 	}
 
+	@Test
+	void shouldThrowExceptionWhenGivesNullString(){
+		final String nullValue = null;	
+		assertThrows(NullOrEmptyStringException.class,()-> utility.checkForNullOrEmpty(nullValue));
+	}
+	
+	@Test
+	void shouldThrowExceptionWhenGivesEmptyString(){
+		final String emptyString = "";	
+		assertThrows(NullOrEmptyStringException.class,()-> utility.checkForNullOrEmpty(emptyString));
+	}
+	
+	@Test
+	void shouldPrintMessage() {
+		final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+		final PrintStream originalOutput = System.out;
+		final String expectedValue = "testUser pays 50.0 to dummyUser\r\n";
+
+		System.setOut(new PrintStream(outputStream));
+
+		utility.printOutput("testUser", "dummyUser", BigDecimal.valueOf(50.0));
+
+		assertEquals(expectedValue, outputStream.toString());
+
+		System.setOut(originalOutput);
+	}
 }

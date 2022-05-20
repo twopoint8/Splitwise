@@ -13,7 +13,6 @@ import inc.sanvic.exception.InvalidInputFormatException;
 import inc.sanvic.exception.NullOrEmptyStringException;
 import inc.sanvic.helper.Utility;
 import inc.sanvic.repository.ExpenseRepository;
-import inc.sanvic.repository.FriendRepository;
 
 @Service
 public class InputService {
@@ -27,8 +26,7 @@ public class InputService {
 	private Utility utility;
 
 	@Autowired
-	public InputService(ExpenseRepository expenseRepository) {
-		super();
+	public InputService(ExpenseRepository expenseRepository, Utility utility) {
 		this.expenseRepository = expenseRepository;
 		this.utility = utility;
 	}
@@ -45,7 +43,7 @@ public class InputService {
 		scanner.close();
 	}
 
-	private void extractValuesAndValidate(String inputFromConsole) {
+	public void extractValuesAndValidate(String inputFromConsole) {
 		List<String> nameAndAmount;
 		try {
 			nameAndAmount = extractNameAndAmount(inputFromConsole);
@@ -59,10 +57,8 @@ public class InputService {
 			System.err.println("Amount must be number\nPlease make this entry again");
 		} catch (InvalidInputFormatException invalidInputFormatException) {
 			System.err.println(
-					"Input format is not valid, Should be like [Payee Name, Amount]\nPlease make this entry again");
-		}
-		catch(NullOrEmptyStringException nullOrEmptyNameException)
-		{
+					"Input format is not valid, Should be like [Payer Name, Amount]\nPlease make this entry again");
+		} catch (NullOrEmptyStringException nullOrEmptyNameException) {
 			System.err.println("Name should not be empty\nPlease make this entry again");
 		}
 	}
@@ -76,7 +72,7 @@ public class InputService {
 
 	public BigDecimal pasrseAndValidateAmount(String amount) throws InvalidAmountException, NumberFormatException {
 		BigDecimal amountInDecimal = new BigDecimal(amount);
-		
+
 		if (amountInDecimal.compareTo(BigDecimal.ZERO) < 0)
 			throw new InvalidAmountException("Amount must be equal or greater than 0");
 

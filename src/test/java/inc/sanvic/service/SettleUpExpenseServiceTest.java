@@ -2,6 +2,7 @@ package inc.sanvic.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -30,13 +31,13 @@ class SettleUpExpenseServiceTest {
 
 	@InjectMocks
 	@Spy
-	SettleUpExpenseService settleUpService;
+	private SettleUpExpenseService settleUpService;
 	@Mock
-	ExpenseRepository expenseRepository;
+	private ExpenseRepository expenseRepository;
 	@Mock
-	Utility utility;
+	private Utility utility;
 	@Mock
-	IndexRepository indexRepository;
+	private IndexRepository indexRepository;
 
 	@Test
 	void shouldCallCalculateEachUserTotalAmountToPayOrGetMethod() {
@@ -62,7 +63,7 @@ class SettleUpExpenseServiceTest {
 	void shouldCallsettleAmountAmongUsersMethod() {
 		final BigDecimal[] totalAmountPerUserList = { BigDecimal.TEN, BigDecimal.TEN.negate() };
 
-		doNothing().when(settleUpService).printOutput(Mockito.any(), Mockito.any(), Mockito.any());
+		doNothing().when(utility).printOutput(Mockito.any(), Mockito.any(), Mockito.any());
 
 		when(utility.getIndexOfMaximumValue(Mockito.any())).thenCallRealMethod();
 		when(utility.getIndexOfMinimumValue(Mockito.any())).thenCallRealMethod();
@@ -73,22 +74,23 @@ class SettleUpExpenseServiceTest {
 
 		verify(utility, times(2)).getIndexOfMaximumValue(Mockito.any());
 		verify(utility, times(2)).getIndexOfMinimumValue(Mockito.any());
-		verify(utility, times(1)).findMinimumOfTwoValues(Mockito.any(), Mockito.any());
+		verify(utility, times(2)).findMinimumOfTwoValues(Mockito.any(), Mockito.any());
 		verify(indexRepository, times(2)).getFriendByIndex(Mockito.anyInt());
 	}
 
+	
 	@Test
-	void shouldPrintMessage() {
-		final ByteArrayOutputStream outContent = new ByteArrayOutputStream();
-		final PrintStream originalOut = System.out;
-		final String expectedValue = "testUser pays 50.0 to dummyUser\r\n";
-
-		System.setOut(new PrintStream(outContent));
-
-		settleUpService.printOutput("testUser", "dummyUser", BigDecimal.valueOf(50.0));
-
-		assertEquals(expectedValue, outContent.toString());
-
-		System.setOut(originalOut);
+	void shouldCallSettleUpAmount(){
+		final BigDecimal[][] dummyBalanceSheetMatrix = { { BigDecimal.ZERO, BigDecimal.valueOf(50.0) }, { BigDecimal.TEN, BigDecimal.ZERO } };
+		final BigDecimal[] totalAmountPerFriend = {BigDecimal.valueOf(-40.0), BigDecimal.valueOf(40.0)};
+		
+		doReturn(totalAmountPerFriend).when(settleUpService).calculateEachFriendTotalAmountToPayOrGet(Mockito.any());
+		doNothing().when(settleUpService).settleAmountAmongFriends(Mockito.any());
+		
+		settleUpService.settleUpAmount(dummyBalanceSheetMatrix);
+		
+		verify(settleUpService, times(1)).calculateEachFriendTotalAmountToPayOrGet(Mockito.any());
+		verify(settleUpService, times(1)).settleAmountAmongFriends(Mockito.any());
 	}
+	
 }

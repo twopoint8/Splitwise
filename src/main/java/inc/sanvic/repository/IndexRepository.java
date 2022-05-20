@@ -1,5 +1,6 @@
 package inc.sanvic.repository;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -16,8 +17,8 @@ public class IndexRepository {
 
 	
 	public IndexRepository() {
-		friendMappingToIndex = new HashMap<>();
-		indexMappingToFriend = new HashMap<>();
+		friendMappingToIndex = Collections.synchronizedMap(new HashMap<>());
+		indexMappingToFriend = Collections.synchronizedMap(new HashMap<>());
 	}
 
 	public Integer getIndexByFriend(Friend friend) {

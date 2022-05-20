@@ -44,4 +44,8 @@ public class Utility {
 		if(name == null || name.isEmpty())
 			throw new NullOrEmptyStringException("Name should not be empty");
 	}
+	
+	public void printOutput(String whoPays, String whomToPay, BigDecimal howMuchToPay) {
+		System.out.println(whoPays + " pays " + howMuchToPay + " to " + whomToPay);
+	}
 }

@@ -23,11 +23,11 @@ import inc.sanvic.repository.IndexRepository;
 class IndexingServiceTest {
 
 	@InjectMocks
-	IndexingService indexingService;
+	private IndexingService indexingService;
 	@Mock
-	IndexRepository indexRepository;
+	private IndexRepository indexRepository;
 	@Mock
-	ExpenseRepository expenseRepository;
+	private ExpenseRepository expenseRepository;
 
 	@Test
 	void shouldSetIndexesForGivenExpenses() {

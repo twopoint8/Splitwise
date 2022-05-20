@@ -26,18 +26,18 @@ import inc.sanvic.repository.IndexRepository;
 class ExpenseManagerServiceTest {
 
 	@InjectMocks
-	 ExpenseManagerService expenseManagerService;
+	private ExpenseManagerService expenseManagerService;
 	@Mock
-	Utility utility;
+	private Utility utility;
 	@Mock
-	IndexRepository indexRepository;
+	private IndexRepository indexRepository;
 	@Mock
-	SettleUpExpenseService settleUpExpenseService;
+	private SettleUpExpenseService settleUpExpenseService;
 	@Mock
-	ExpenseRepository expenseRepository;
+	private ExpenseRepository expenseRepository;
+	@Mock
+	private IndexingService indexService;
 	
-	@Mock
-	IndexingService indexService;
 	@Test
 	void shouldCallSplitExpenseFunction() {
 		final Expense expense = Expense.createExpense(BigDecimal.valueOf(100.0),Friend.createFriendInstance("testUser"));
@@ -45,13 +45,13 @@ class ExpenseManagerServiceTest {
 		
 		expenses.add(expense);
 		
-		doNothing().when(settleUpExpenseService).calculateEachFriendTotalAmountToPayOrGet(Mockito.any());
+		doNothing().when(settleUpExpenseService).settleUpAmount(Mockito.any());
 		doNothing().when(indexService).setIndexes();
 		when(expenseRepository.getExpenses()).thenReturn(expenses);
 		
 		expenseManagerService.splitExpenses();
 
-		verify(settleUpExpenseService, times(1)).calculateEachFriendTotalAmountToPayOrGet(Mockito.any());
+		verify(settleUpExpenseService, times(1)).settleUpAmount(Mockito.any());
 		verify(expenseRepository,times(1)).getExpenses();
 	}
 	@Test
